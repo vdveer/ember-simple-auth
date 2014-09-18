@@ -1204,6 +1204,9 @@ define("simple-auth/setup",
     var Ephemeral = __dependency4__["default"];
 
     function extractLocationOrigin(location) {
+      if (location === '*'){
+          return location;
+      }
       if (Ember.typeOf(location) === 'string') {
         var link = document.createElement('a');
         link.href = location;
