@@ -1,3 +1,248 @@
+# 1.2.0-beta.1
+
+* Ember Simple Auth now supports FastBoot out-of-the-box (when using the cookie
+  session store), see #1035.
+* Ember CLI's new `rootURL` setting is now used correctly, see #1070.
+* The cookie session store will now rewrite its cookies when any of its
+  configurable properties (like cookie name) change, see #1056.
+* The `DataAdapterMixin` now also overrides the `headersForRequest` method
+  which makes it behave correctly with Ember Data 1.7 and above, see #1033.
+* Configurable routes like the login route etc. are now configured via
+  overriding properties of the respective route mixins instead of settings in
+  `config/environment.js`, see #985.
+* The OAuth 2.0 Passwort Grant authenticator now allows to define custom
+  headers to be sent with authentication requests, see #1018.
+* Authenticators can now reject with the server response when requests fail,
+  see #1012.
+* Server responses are now validated before authenticators resolve
+  authentication, see #957.
+* The offset that the OAuth 2.0 Password Grant authenticator uses when
+  refreshing access tokens is now defined in an (overridable) property, see
+  #840.
+* The default cookie names that the cookie session store uses are now compliant
+  with RFC 2616, see #978.
+
+# 1.1.0
+
+There were no changes since 1.1.0-beta.5.
+
+# 1.1.0-beta.5
+
+* The session will now ignore session store events when it is currently
+  authenticating or restoring, see #965.
+
+# 1.1.0-beta.4
+
+* A critical bug in the cookie store causing an immediate logout after logging
+  in has been fixed, see #931.
+* A deprecation in Ember.js 2.5.0 was fixed, see #941.
+* The versions of Ember CLI used to build and develop the addon itself have
+  been updated to the latest release versions, see #936.
+* The README, API docs and contribution guidelines have been improved, see
+  #954, #947.
+
+# 1.1.0-beta.3
+
+* The `ember-cli-is-package-missing` package was added as a dependency
+  (previously it was only a dev dependency), fixing a bug that occurred when
+  running the new generators, see #913.
+* A regression in the cookie store was fixed causing a transition to the
+  `routeAfterAuthentication` after session restoration, see #915.
+* The code base now consistently overrides the `init` method instead of relying
+  on `on('init', …` which results in easier to understand and maintain code,
+  see #917.
+
+# 1.1.0-beta.2
+
+* The `silent-error` package was added as a dependency (previously it was only
+  a dev dependency), fixing a bug that occurred when running the new
+  generators, see #911.
+* The API docs for token expiration and refresh were improved, see #921.
+* Lots of Ember Simple Auth's internal where cleaned up to take more advantage
+  of Babel in order to make the code more concise and easier to maintain, see
+  #905.
+
+# 1.1.0-beta.1
+
+* Session Stores are now asynchronous. Synchronous session stores will still
+  work but are now deprecated and will be removed in Ember Simple Auth 2.0, see
+  #714, #717.
+* Ember Simple auth now comes with blueprints for creating authenticators and
+  authorizers, see #879.
+* The requests that the devise authenticator makes can now be customized with
+  additional options, see #886.
+* The default for (Ember Simple Auth's internal) `baseURL` property is now
+  `''`, see #881.
+* `browserify` is now only enabled for Ember Simple Auth's own tests, fixing
+  potential problems in apps, see #833.
+* When the authenticator fails to restore the session with an error, that error
+  will now be logged, see #829.
+* When invalidating a torii session, the session data will now be passed to the
+  torii provider, see #808.
+* ember-getowner-polyfill is now include in Ember Simple Auth's dependencies so
+  that applications don't have to install it explicitly, see #806.
+* Ember Simple Auth will no longer trigger a deprecation regarding use of the
+  `container` property, see #894, #804, #796.
+* The `DataAdapterMixin` will now only invalidate the session on 401 responses
+  when it is actually currently authenticated, see #722.
+
+# 1.0.1
+
+* A bug in the mechanism that forwards events from the internal session through
+  the session service was fixed, see #736, #730.
+* The documentation and assertions for the torii authenticator was fixed,
+  see #734, #735.
+* A typo in the documentation was fixed, see #738.
+
+# 1.0.0
+
+__Ember Simple Auth 1.0.0 changes a lot of external API, a large part of these
+changes being breaking changes.__ Because of that this changelog entry does not
+mark these breaking changes individually but merely offers an overview of what
+has changed.
+
+* Ember Simple Auth is __now compatible with all Ember version starting with
+  1.12.0__.
+* Ember Simple Auth is __only available as an Ember CLI Addon__ - the
+  globalized and bower distributions are no longer maintained.
+* The __session is no longer injected__ into routes and controllers but instead
+  __exposed as a service__. The service has most of the methods that the
+  session had before. The session can also no longer be extended. Instead
+  either extend the session service or add another service that uses the
+  session service to provide additional functionality.
+* __Auto-authorization of all AJAX request has been dropped__. All
+  authorization now has to be initiated explicitly via the session service's
+  `authorize` method. There is the new `DataAdapterMixin` that can be used to
+  simply authorize all Ember Data requests.
+* All authenticators and authorizers the application uses now have to be
+  defined in `app/authenticators` and `app/authorizers` respectively while in
+  most cases they will simply inherit one of the predefined authenticators/
+  authorizers. Also configuration of authenticators and authorizers is no
+  longer done via `config/environment.js` but instead by overriding properties
+  in the extended authenticators/authorizers.
+* The `ApplicationRouteMixin` now maps the session events to the
+  `sessionAuthenticated` and `sessionInvalidated` methods instead of the
+  actions from previous versions.
+* The default session store is now the adaptive store that will use
+  `localStorage` if available and a cookie otherwise. When testing, Ember
+  Simple Auth will always use the ephemeral store.
+* The test helpers now take the application instance as the first argument and
+  must be imported explicitly in the respective test.
+* The session is now restored in the application route's `beforeModel` method
+  instead of in an initializer.
+
+# 0.8.0
+
+* Correctly initialize the session's `content`, see #556.
+
+# 0.8.0-beta.3
+
+* Fixed a bug related to the mechanism for automatic translation of session
+  events to route actions leaking state, see #544.
+* Fixed a bug where non-secure session data would get lost after a reload, see
+  #534.
+* Ember Simple Auth does not explicitly set the container on the session
+  anymore as that's already set by the container itself when creating the
+  object, see #520.
+
+# 0.8.0-beta.2
+
+* Ember Simple Auth now uses the application's `register` and `inject` methods
+  instead of the container's, see #462.
+* A bug in the OAuth 2.0 authorizer was fixed that prevented requests from
+  actually being authorized, see #483.
+* Changed the way the test helpers are loaded to prevent JSHint errors, see
+  #478.
+* Better implementation for detection of changes in the session store, see
+  #469.
+
+# 0.8.0-beta.1
+
+* __[BREAKING]__ The devise package's `identificationAttributeName` property
+  now defaults to `email`, see #456.
+* The secure session data is now stored under the special key `secure`, see
+  #414. This makes sure that the session isn't cleared completely on logout but
+  only the `secure` key instead. This is a __[BREAKING]__ change if you're
+  using a custom authorizer as that must fetch the token etc. from the
+  session's `secure` key now.
+* The cookie session store will now only expire on inactivity - as long as the
+  session is active, the cookie's expiration time will frequently be updated,
+  see #451.
+* The `LoginControllerMixin` and `AuthenticationControllerMixin` mixins are now
+  deprecated. The `invalidateSession` and `authenticateSession` actions in the
+  `ApplicationRouteMixin` mixin have been deprecated as well.
+  `authenticateSession` is replaced by the new `sessionRequiresAuthentication`
+  action, see #467.
+* The `AuthenticatedRouteMixin` mixin will now correctly return upstream
+  `beforeModel` promises, see #464.
+
+# 0.7.3
+
+* __[BREAKING]__ The name of the token attribute used by the devise
+  authenticator and authorizer is now `token` by default, see #394.
+* __[BREAKING]__ The devise authenticator will now send the user's
+  identification for the configured `identificationAttributeName` instead of
+  always using `email`, see #403.
+* The `crossOriginWhitelist` now supports whitelisting all subdomains of a
+  specific domain, see #398.
+* The docs for defining custom authenticators have been improved, see #399.
+* The tests will now run against the newest versions of Ember, Ember.js, jQuery
+  and handlebars.
+* The examples now run with handlebars 2.0.0 and jQuery 2.1.3.
+* The Google+ example has been fixed so that it will always prompt the user for
+  approval, see #412.
+* The template for the API docs was updated so that it works with the newest
+  handlebars version.
+
+# 0.7.2
+
+* The session's `authenticate` method now accepts an arbitrary list of
+  arguments to pass to the authenticator's `authenticate` method which also
+  allows to pass options to torii providers, see #371.
+* With the move away from controllers/views and towards components, the session
+  is now injected into components as well, see #364.
+* The OAuth 2.0 authenticator now handles access scopes, see #363.
+* `ApplicationRouteMixin` will now send actions to the current route if
+  available or the initial transition, see #367.
+* Added a new `currentSession()` helper to the Ember Simple Auth Testing
+  package that provides access to the current session, see #359.
+* Fixed clearing of cookie and `localStorage` stores, see #349.
+* The `ajaxPrefilter` and `ajaxError` handlers were cleaned up.
+
+# 0.7.1
+
+* The `localStorage` session store now correctly reads its configuration from
+  the `Configuration` object and in turn can be configured in
+  `config/environment.js` in Ember CLI projects, see #340.
+
+# 0.7.0
+
+* __[BREAKING]__: The Devise authorizer now sends the session token as
+  `user_token` instead of `token` for consistency.
+* The session store can store nested objects now, see #321.
+* The property names for `user_token` and `user_email` are now configurable for
+  the Devise authenticator/authorizer, see #319.
+* The `ApplicationRouteMixin`'s `sessionInvalidationSucceeded` action will no
+  longer reload the page in testing mode, see #333.
+* The cookie session store now has a `cookieDomain` setting that can be used if
+  e.g. the session needs to be shared across subdomains, see #332.
+* The AMD distribution has been fixed so that it doesn't depend on any specific
+  global objects anymore, see #325, #323.
+* Removed the insecure connection warning as it never actually triggers when it
+  actually should, see #318.
+* The `crossOriginWhitelist` setting can now be set to `['*']` to allow
+  requests to all domains, see #309.
+* The global `ajaxPrefilter` and `ajaxError` hooks will now be setup only once
+  which fixes some problems in testing mode.
+
+# 0.6.7
+
+* The Ember CLI Addons will now use the project's configuration as defined in
+  `config/environment.js` and do not depend on `window.ENV` anymore, see
+  [simplabs/ember-cli-simple-auth#21]https://github.com/simplabs/ember-cli-simple-auth/issues/21.
+* All configuration data is now held in configuration objects for the
+  OAuth 2.0, cookie store and devise extension libraries as well.
+
 # 0.6.6
 
 This release fixes the Ember CLI Addon packages that were (again) published
@@ -159,7 +404,7 @@ incorrectly to npm...
   `setup` method, these values are now defined on `window.ENV['simple-auth']`
   (and `window.ENV['simple-auth-oauth']` etc. for the extension libraries).
   See the
-  [API Docs for `Configuration`](http://ember-simple-auth.simplabs.com/ember-simple-auth-api-docs.html#SimpleAuth-Configuration)
+  [API Docs for `Configuration`](http://ember-simple-auth.com/ember-simple-auth-api-docs.html#SimpleAuth-Configuration)
   for more information.
 * __[BREAKING]__ All underscores have been replaced with dashes in filenames.
   This only affects users that were using the AMD build.
