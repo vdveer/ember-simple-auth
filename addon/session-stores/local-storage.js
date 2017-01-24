@@ -40,6 +40,7 @@ export default BaseStore.extend({
     @public
   */
   key: 'ember_simple_auth-session',
+  keyOld: 'ember_simple_auth:old_session',
 
   init() {
     this._super(...arguments);
@@ -58,7 +59,7 @@ export default BaseStore.extend({
     @public
   */
   persist(data) {
-    this._lastData = data;
+    localStorage.setItem(this.keyOld, data);
     data = JSON.stringify(data || {});
     localStorage.setItem(this.key, data);
 
@@ -89,7 +90,7 @@ export default BaseStore.extend({
   */
   clear() {
     localStorage.removeItem(this.key);
-    this._lastData = {};
+    localStorage.removeItem(this.keyOld);
 
     return RSVP.resolve();
   },
@@ -98,8 +99,8 @@ export default BaseStore.extend({
     jQuery(window).bind('storage', (e) => {
       if (e.originalEvent.key === this.key) {
         this.restore().then((data) => {
-          if (!objectsAreEqual(data, this._lastData)) {
-            this._lastData = data;
+          if (!objectsAreEqual(data, localStorage.getItem(this.keyOld))) {
+            localStorage.setItem(this.keyOld, data);
             this.trigger('sessionDataUpdated', data);
           }
         });
